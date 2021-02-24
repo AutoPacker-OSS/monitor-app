@@ -9,7 +9,7 @@ export const Navbar: FunctionComponent = () => {
   return (
     <Box bg={bg[colorMode]} px={4} borderBottomWidth="1px" width="full">
       <Flex h={16} alignItems={"center"} justifyContent={"space-between"}>
-        <Box d="block" aria-label="dashboard">
+        <Box fontSize="lg" d="block" aria-label="dashboard">
           AutoPacker Monitor
         </Box>
         <Flex align="right" color="gray.500">
