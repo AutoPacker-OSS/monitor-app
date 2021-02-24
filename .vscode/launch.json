@@ -1,0 +1,19 @@
+{
+  "version": "1.0.0",
+  "configurations": [
+    {
+      "type": "chrome",
+      "request": "launch",
+      "name": "Chrome: Debug PreTre Portal",
+      "url": "https://localhost:5000/no",
+      "webRoot": "${workspaceFolder}"
+    },
+    {
+      "type": "firefox",
+      "request": "launch",
+      "name": "Firefox: Debug PreTre Portal",
+      "url": "https://localhost:5000/no",
+      "webRoot": "${workspaceFolder}"
+    }
+  ]
+}
