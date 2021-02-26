@@ -6,28 +6,27 @@ import reportWebVitals from "./reportWebVitals";
 import { ChakraProvider } from "@chakra-ui/react";
 
 // Keycloak
-import { ReactKeycloakProvider } from "@react-keycloak/web";
+import { KeycloakProvider } from "@react-keycloak/web";
 import keycloak from "./keycloak";
 
 /**
- * login-required will authenticate the client if the user
- * is logged-in to Keycloak or display the login page if not.
- */
-const keycloakProviderInitConfig = {
-  onLoad: "login-required",
-};
-
+ * check-sso will only authenticate the client if the user is already logged-in,
+ * if the user is not logged-in the browser will be redirected back to the
+ * application and remain unauthenticated
+ * */
 ReactDOM.render(
-  <ReactKeycloakProvider
-    authClient={keycloak}
-    initOptions={keycloakProviderInitConfig}
+  <KeycloakProvider
+    keycloak={keycloak}
+    initConfig={{
+      onLoad: "login-required",
+    }}
   >
     <React.StrictMode>
       <ChakraProvider>
         <App />
       </ChakraProvider>
     </React.StrictMode>
-  </ReactKeycloakProvider>,
+  </KeycloakProvider>,
   document.getElementById("root")
 );
 
