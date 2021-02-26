@@ -1,10 +1,13 @@
 import { Box, Container, Wrap, WrapItem } from "@chakra-ui/react";
-import React from "react";
+import React, { useEffect } from "react";
+import { useKeycloak } from "@react-keycloak/web";
 import { Card } from "./components/Card/Card";
 import { Navbar } from "./components/Navbar/Navbar";
 import { Service } from "./types/Service";
 
 function App() {
+  const { keycloak } = useKeycloak();
+
   let dummyServices = [
     {
       id: 1,
@@ -18,7 +21,13 @@ function App() {
     },
   ];
 
-  return (
+  useEffect(() => {
+    if (!keycloak.authenticated) {
+      keycloak.login();
+    }
+  }, [keycloak]);
+
+  return keycloak.authenticated ? (
     <>
       <Navbar />
       <Box as="section" padding="4">
@@ -33,7 +42,7 @@ function App() {
         </Container>
       </Box>
     </>
-  );
+  ) : null;
 }
 
 export default App;
