@@ -3,10 +3,11 @@ import { state } from "./state";
 import * as actions from "./actions";
 import * as effects from "./effects";
 import onInitialize from "./onInitialize";
-// import * as auth from './auth';
-// import * as navigation from './navigation';
-// import { createModals } from "./createModals"
-// import * as modals from "./modals/config"
+
+// Namespace
+import * as auth from "./auth";
+import * as logs from "./logs";
+
 export const config = merge(
   {
     onInitialize,
@@ -14,5 +15,8 @@ export const config = merge(
     actions,
     effects,
   },
-  namespaced({})
+  namespaced({
+    auth,
+    logs
+  })
 );

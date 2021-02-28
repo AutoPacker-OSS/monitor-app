@@ -1,8 +1,20 @@
-import { MockAuthService } from "../services/auth/MockAuthService";
-import { AuthService } from "../services/auth/AuthService";
-
-const isDev = process.env["mode"] === "dev";
+import axios from 'axios';
 
 export const api = {
-  auth: isDev ? new MockAuthService() : new AuthService(),
+};
+
+export const tokenService = {
+  get: () => {
+    const token = localStorage.getItem("api_token") || null;
+    axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    return token;
+  },
+  set: (token: string) => {
+    localStorage.setItem("api_token", token);
+    axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+  },
+  clear: () => {
+    localStorage.removeItem("api_token");
+    axios.defaults.headers.common["Authorization"] = "";
+  },
 };
