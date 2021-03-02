@@ -9,11 +9,6 @@ import { ChakraProvider } from "@chakra-ui/react";
 import { KeycloakProvider } from "@react-keycloak/web";
 import keycloak from "./keycloak";
 
-/**
- * check-sso will only authenticate the client if the user is already logged-in,
- * if the user is not logged-in the browser will be redirected back to the
- * application and remain unauthenticated
- * */
 ReactDOM.render(
   <KeycloakProvider
     keycloak={keycloak}

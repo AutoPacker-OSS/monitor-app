@@ -21,8 +21,9 @@ import {
 import React, { FunctionComponent, useState } from "react";
 import { StatusCode } from "../../elements/StatusCode/StatusCode";
 import { Service } from "../../types/Service";
-import { getLogsPreview } from "../../overmind/logs/actions";
+import { getLogsPreview, downloadLogs } from "../../overmind/logs/actions";
 import { useKeycloak } from "@react-keycloak/web";
+import fileDownload from "js-file-download";
 
 export const Card: FunctionComponent<{ service: Service }> = ({ service }) => {
   const [serviceStatus, setServiceStatus] = useState<boolean>(service.status);
@@ -50,6 +51,23 @@ export const Card: FunctionComponent<{ service: Service }> = ({ service }) => {
     setOpenModal(true);
   };
 
+  const download = async () => {
+    const file = await downloadLogs(keycloak.token, service);
+    if (file.status !== 200) {
+      setServiceStatus(false);
+      toast({
+        title: "An error occurred.",
+        description: `Unable to fetch preview logs for service: ${service.name}`,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+      return;
+    }
+    setServiceStatus(true);
+    fileDownload(file.data, service.name + ".log");
+  };
+
   return (
     <>
       <Box maxW="sm" borderWidth="1px" borderRadius="lg" overflow="hidden">
@@ -66,7 +84,11 @@ export const Card: FunctionComponent<{ service: Service }> = ({ service }) => {
             variant="outline"
           >
             <Button onClick={previewLogs}>Preview Logs</Button>
-            <IconButton aria-label="download logs" icon={<DownloadIcon />} />
+            <IconButton
+              onClick={download}
+              aria-label="download logs"
+              icon={<DownloadIcon />}
+            />
           </ButtonGroup>
         </Box>
       </Box>
