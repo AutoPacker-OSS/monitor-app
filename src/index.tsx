@@ -1,13 +1,12 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import "./index.css";
-import App from "./App";
-import reportWebVitals from "./reportWebVitals";
 import { ChakraProvider } from "@chakra-ui/react";
-
 // Keycloak
 import { KeycloakProvider } from "@react-keycloak/web";
+import React from "react";
+import ReactDOM from "react-dom";
+import App from "./App";
+import "./index.css";
 import keycloak from "./keycloak";
+import reportWebVitals from "./reportWebVitals";
 
 ReactDOM.render(
   <KeycloakProvider

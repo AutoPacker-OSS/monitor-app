@@ -21,7 +21,7 @@ import {
 import React, { FunctionComponent, useState } from "react";
 import { StatusCode } from "../../elements/StatusCode/StatusCode";
 import { Service } from "../../types/Service";
-import { getLogsPreview, downloadLogs } from "../../overmind/logs/actions";
+import { getLogsPreview, downloadLogs } from "../../services/logs/actions";
 import { useKeycloak } from "@react-keycloak/web";
 import fileDownload from "js-file-download";
 
@@ -97,7 +97,7 @@ export const Card: FunctionComponent<{ service: Service }> = ({ service }) => {
           onClose={() => setOpenModal(false)}
           isOpen={openModal}
           isCentered
-          size="full"
+          size="6xl"
           scrollBehavior="inside"
         >
           <ModalOverlay />
