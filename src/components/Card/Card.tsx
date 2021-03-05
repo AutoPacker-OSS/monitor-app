@@ -11,6 +11,7 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Spinner,
   Table,
   Tbody,
   Td,
@@ -18,15 +19,19 @@ import {
   Tr,
   useToast,
 } from "@chakra-ui/react";
-import React, { FunctionComponent, useState } from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
 import { StatusCode } from "../../elements/StatusCode/StatusCode";
 import { Service } from "../../types/Service";
-import { getLogsPreview, downloadLogs } from "../../services/logs/actions";
+import {
+  getLogsPreview,
+  downloadLogs,
+  checkHealth,
+} from "../../services/logs/actions";
 import { useKeycloak } from "@react-keycloak/web";
 import fileDownload from "js-file-download";
 
 export const Card: FunctionComponent<{ service: Service }> = ({ service }) => {
-  const [serviceStatus, setServiceStatus] = useState<boolean>(service.status);
+  const [serviceStatus, setServiceStatus] = useState<boolean>(undefined);
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [data, setData] = useState<string[]>([]);
 
@@ -68,30 +73,53 @@ export const Card: FunctionComponent<{ service: Service }> = ({ service }) => {
     fileDownload(file.data, service.name + ".log");
   };
 
+  useEffect(() => {
+    (async () => {
+      const healthStatus = await checkHealth(keycloak.token, service);
+      if (healthStatus.data.status !== "UP") {
+        console.log("SHOULD BE 3 TIMES");
+        setServiceStatus(false);
+        return;
+      }
+      setServiceStatus(true);
+    })();
+  }, [keycloak.token, service]);
+
   return (
     <>
-      <Box maxW="sm" borderWidth="1px" borderRadius="lg" overflow="hidden">
-        <Box padding="0 1em">
-          <StatusCode status={serviceStatus} />
+      {serviceStatus !== undefined ? (
+        <Box maxW="sm" borderWidth="1px" borderRadius="lg" overflow="hidden">
+          <Box padding="0 1em">
+            <StatusCode status={serviceStatus} />
+          </Box>
+          <Box padding="0 1em 1em 1em" textAlign="center">
+            <Text fontSize="2xl">{service.name}</Text>
+            <ButtonGroup
+              padding="0.5em 0 0 0"
+              colorScheme="teal"
+              size="md"
+              isAttached
+              variant="outline"
+            >
+              <Button onClick={previewLogs}>Preview Logs</Button>
+              <IconButton
+                onClick={download}
+                aria-label="download logs"
+                icon={<DownloadIcon />}
+              />
+            </ButtonGroup>
+          </Box>
         </Box>
-        <Box padding="0 1em 1em 1em" textAlign="center">
-          <Text fontSize="2xl">{service.name}</Text>
-          <ButtonGroup
-            padding="0.5em 0 0 0"
-            colorScheme="teal"
-            size="md"
-            isAttached
-            variant="outline"
-          >
-            <Button onClick={previewLogs}>Preview Logs</Button>
-            <IconButton
-              onClick={download}
-              aria-label="download logs"
-              icon={<DownloadIcon />}
-            />
-          </ButtonGroup>
-        </Box>
-      </Box>
+      ) : (
+        <Spinner
+          thickness="4px"
+          speed="0.65s"
+          emptyColor="gray.200"
+          color="blue.500"
+          size="xl"
+        />
+      )}
+
       {openModal ? (
         <Modal
           onClose={() => setOpenModal(false)}

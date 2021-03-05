@@ -1,0 +1,28 @@
+name: Monitor App Deploy
+
+on:
+  workflow_run:
+    workflows:
+      - Monitor App Build
+    types:
+      - completed
+
+jobs:
+  # Deploy Monitor app
+  deploy_staging:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy changes
+        if: ${{ success() }}
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.STAGING_HOST }}
+          username: ${{ secrets.STAGING_USERNAME }}
+          key: ${{ secrets.STAGING_PASSWORD }}
+          port: ${{ secrets.STAGING_PORT }}
+          script: |
+            cd ./AutoPacker
+            docker container rm -f monitor-app
+            docker image pull autopacker/monitor-app
+            docker container run -d --name monitor-app -p 9595:80 autopacker/monitor-app
